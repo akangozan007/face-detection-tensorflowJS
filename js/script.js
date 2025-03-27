@@ -20,7 +20,8 @@ const detectFaces = async () => {
     ctx.drawImage(video, 0, 0, 600, 400);
 
     const prediction = await model.estimateFaces(video, false);
-
+    console.log(prediction);
+    
     prediction.forEach((pred) => {
         ctx.beginPath();
         ctx.lineWidth = "4";
@@ -32,11 +33,31 @@ const detectFaces = async () => {
             pred.bottomRight[1] - pred.topLeft[1]
         );
         ctx.stroke();
+    
+        
         ctx.fillStyle = "red";
-        pred.landmarks.forEach(landmark => {
-            ctx.fillRect(landmark[0], landmark[1], 5,5);
+        
+        
+        const landmarkLabels = [
+            "Mata Kiri",   
+            "Mata Kanan",  
+            "Hidung",      
+            "Mulut",       
+            "Telinga Kiri",
+            "Telinga Kanan"
+        ];
+    
+        pred.landmarks.forEach((landmark, index) => {
+            // Gambar titik landmark
+            ctx.fillRect(landmark[0], landmark[1], 5, 5);
+    
+            // Tampilkan teks di dekat landmark
+            ctx.fillStyle = "yellow"; // Warna teks
+            ctx.font = "16px Arial";  // Ukuran font
+            ctx.fillText(landmarkLabels[index], landmark[0] + 10, landmark[1] - 10);
         });
     });
+    
 };
 
 
